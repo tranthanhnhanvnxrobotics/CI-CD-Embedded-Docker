@@ -1,0 +1,39 @@
+# Tên của quy trình này (sẽ hiển thị trên giao diện GitHub)
+name: STM32 Auto Build CI
+
+# 1. KHI NÀO THÌ CHẠY? (Trigger)
+# Đoạn này dặn GitHub: "Hễ có ai push code lên nhánh 'main' thì kích hoạt ngay!"
+on:
+  push:
+    branches: [ "main" ]
+
+# 2. LÀM NHỮNG CÔNG VIỆC GÌ? (Jobs)
+jobs:
+  build_firmware:
+    # Xin GitHub cấp cho 1 con server chạy hệ điều hành Ubuntu mới nhất
+    runs-on: ubuntu-latest
+
+    # Các bước thực hiện tuần tự từ trên xuống dưới
+    steps:
+    # BƯỚC 2.1: Tải code từ kho chứa (Repository) về con Server này
+    # Cú pháp 'uses' là gọi các công cụ có sẵn do cộng đồng viết.
+    - name: Clone code về server
+      uses: actions/checkout@v3
+
+    # BƯỚC 2.2: Tạo cỗ máy Docker y chang lúc nãy bạn làm
+    - name: Chế tạo Docker Builder
+      run: docker build -t stm32-builder .
+
+    # BƯỚC 2.3: Ra lệnh cho Docker dịch code (Lệnh này giống hệt lệnh chạy trên máy bạn)
+    # Lưu ý: Trên GitHub, biến môi trường thay vì $(pwd) thì phải dùng ${{ github.workspace }}
+    - name: Biên dịch code STM32
+      run: docker run --rm -v ${{ github.workspace }}:/workspace stm32-builder bash ./build.sh
+
+    # BƯỚC 2.4: Nén file chạy lại để bạn tải về (Gọi là Artifact)
+    # Sau khi chạy xong Bước 2.3, file LearnCICD (file ELF) đã nằm trong thư mục build/
+    # Đoạn này sẽ lấy file đó, đóng gói thành 1 cục ZIP cho bạn tải xuống.
+    - name: Lưu trữ file Firmware
+      uses: actions/upload-artifact@v3
+      with:
+        name: STM32_Firmware
+        path: build/LearnCICD
