@@ -17,3 +17,4 @@ cmake -DCMAKE_SYSTEM_NAME=Generic \
 
 # Biên dịch
 make
+# Test tinh nang luu token
