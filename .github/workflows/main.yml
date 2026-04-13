@@ -18,7 +18,7 @@ jobs:
     # BƯỚC 2.1: Tải code từ kho chứa (Repository) về con Server này
     # Cú pháp 'uses' là gọi các công cụ có sẵn do cộng đồng viết.
     - name: Clone code về server
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     # BƯỚC 2.2: Tạo cỗ máy Docker y chang lúc nãy bạn làm
     - name: Chế tạo Docker Builder
@@ -33,7 +33,7 @@ jobs:
     # Sau khi chạy xong Bước 2.3, file LearnCICD (file ELF) đã nằm trong thư mục build/
     # Đoạn này sẽ lấy file đó, đóng gói thành 1 cục ZIP cho bạn tải xuống.
     - name: Lưu trữ file Firmware
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: STM32_Firmware
         path: build/LearnCICD
